@@ -5,8 +5,7 @@ from sentence_transformers import SentenceTransformer
 client = chromadb.Client()
 collection = client.get_or_create_collection(name="news_articles")
 
-# Dummy data: Articles with specific stances to act as "the other side"
-# In a real app, this would be a massive database.
+# Dummy data: Articles with specific stances
 opposing_articles = [
     {"text": "Why renewable energy is unreliable and nuclear is the future.", "topic": "environment", "stance": "against"},
     {"text": "Cryptocurrency is a revolutionary technology freeing people from banks.", "topic": "crypto", "stance": "favor"},
@@ -22,7 +21,7 @@ def setup_database():
         client.delete_collection("news_articles")
     except:
         pass
-        
+    
     global collection
     collection = client.get_or_create_collection(name="news_articles")
     
@@ -35,14 +34,8 @@ def setup_database():
         )
 
 def get_opposite_view(topic_name, user_stance):
-    """
-    Search the database for an article on the same topic 
-    but with the opposite stance.
-    """
-    # If user is 'Favor' (1), we want 'Against' articles, and vice versa.
     target_stance = "against" if user_stance > 0 else "favor"
     
-    # Query the database
     results = collection.query(
         query_texts=[topic_name],
         n_results=1,
