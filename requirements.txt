@@ -1,11 +1,7 @@
+streamlit
+altair<6
+pandas
+plotly
 praw
 python-dotenv
-pandas
-bertopic
-scikit-learn
-transformers
-sentence-transformers
-streamlit
-plotly
-hdbscan
 numpy
