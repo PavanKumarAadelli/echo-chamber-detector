@@ -10,5 +10,3 @@ streamlit
 plotly
 hdbscan
 numpy
-chromadb
-pysqlite3-binary
