@@ -2,18 +2,18 @@ import streamlit as st
 import pandas as pd
 import sys
 import os
-from recommender import setup_database, get_opposite_view
 
-print("--- Starting App ---")
-
-# Add the 'src' folder to the path
+# --- SETUP PATH FOR IMPORTS ---
+# This tells Python to look inside the 'src' folder for files
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-try:
-    from fetcher import fetch_user_data
-    from analyzer import fit_topic_model, load_stance_model, get_stance_scores
-    from utils import calculate_echo_score
-    import plotly.express as px
+# --- IMPORTS ---
+# Now we can import files from the src folder
+from fetcher import fetch_user_data
+from analyzer import fit_topic_model, load_stance_model, get_stance_scores
+from utils import calculate_echo_score
+from recommender import setup_database, get_opposite_view
+import plotly.express as px
     print("--- Imports Successful ---")
 except Exception as e:
     st.error(f"Import Error: {e}")
