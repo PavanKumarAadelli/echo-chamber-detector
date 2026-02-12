@@ -8,6 +8,7 @@ torch
 sentence-transformers
 streamlit
 plotly
-chromadb
 hdbscan
 numpy
+chromadb
+pysqlite3-binary
