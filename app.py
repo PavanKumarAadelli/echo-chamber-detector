@@ -36,25 +36,28 @@ if run_analysis:
         st.success(f"Loaded {len(data)} comments.")
         df = pd.DataFrame(data)
 
-        # 2. Topic Modeling
-        with st.spinner("Discovering topics (AI thinking)..."):
+                # 2. Topic Modeling
+        with st.spinner("Discovering topics..."):
             docs = df['text'].tolist()
             topic_model, topics = fit_topic_model(docs)
             
-            # --- Generate Clean Topic Names ---
-            topic_names = []
-            for t in topics:
-                if t == -1:
-                    topic_names.append("General")
-                else:
-                    topic_words = topic_model.get_topic(t)
-                    if topic_words:
-                        name = "_".join([word for word, _ in topic_words[:3]])
-                        topic_names.append(name)
+            # If topic_model is None (Simulation Mode), topics are already names
+            if topic_model is None:
+                df['topic'] = topics
+            else:
+                # Original logic for real BERTopic (if used later)
+                topic_names = []
+                for t in topics:
+                    if t == -1:
+                        topic_names.append("General")
                     else:
-                        topic_names.append("Topic_" + str(t))
-            
-            df['topic'] = topic_names
+                        topic_words = topic_model.get_topic(t)
+                        if topic_words:
+                            name = "_".join([word for word, _ in topic_words[:3]])
+                            topic_names.append(name)
+                        else:
+                            topic_names.append("Topic_" + str(t))
+                df['topic'] = topic_names
 
         # 3. Stance Detection
         with st.spinner("Detecting stances (Using Zero-Shot AI)..."):
