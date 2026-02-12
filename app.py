@@ -14,7 +14,7 @@ from analyzer import fit_topic_model, load_stance_model, get_stance_scores
 from utils import calculate_echo_score
 from recommender import setup_database, get_opposite_view
 import plotly.express as px
-    print("--- Imports Successful ---")
+print("--- Imports Successful ---")
 except Exception as e:
     st.error(f"Import Error: {e}")
     st.stop()
