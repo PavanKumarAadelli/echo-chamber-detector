@@ -1,13 +1,13 @@
-from bertopic import BERTopic
-from transformers import pipeline
-from sentence_transformers import SentenceTransformer
-from hdbscan import HDBSCAN
+# --- LAZY IMPORTS ---
+# We import heavy libraries inside the functions so the app starts faster
 
 def fit_topic_model(documents):
-    # Use a specific model for embeddings
-    sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
+    # Import heavy libraries only when needed
+    from bertopic import BERTopic
+    from sentence_transformers import SentenceTransformer
+    from hdbscan import HDBSCAN
     
-    # FIX: Configure HDBSCAN to work with small datasets
+    sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
     hdbscan_model = HDBSCAN(min_cluster_size=2, metric='euclidean', prediction_data=True)
     
     topic_model = BERTopic(
@@ -20,26 +20,21 @@ def fit_topic_model(documents):
     topics, probs = topic_model.fit_transform(documents)
     return topic_model, topics
 
-# 2. Stance Detection Functions (Using Zero-Shot Classification)
 def load_stance_model():
-    # This model is powerful and works on any topic
-    classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+    from transformers import pipeline
+    # Use a smaller, faster model for the cloud
+    classifier = pipeline("zero-shot-classification", model="distilbert-base-uncased-mnli")
     return classifier
 
 def get_stance_scores(texts, targets, classifier):
     labels = []
     candidate_labels = ["favor", "against"]
     
-    print("Analyzing stances (Zero-Shot)...")
     for text, target in zip(texts, targets):
-        # We ask the model: Does this text look like "favor" or "against" the topic?
         result = classifier(text, candidate_labels)
-        
-        # The result gives scores for each label
         favor_score = result['scores'][result['labels'].index('favor')]
         against_score = result['scores'][result['labels'].index('against')]
         
-        # Simple logic: Convert to -1, 0, 1
         if favor_score > 0.7:
             score = 1
         elif against_score > 0.7:
@@ -48,5 +43,4 @@ def get_stance_scores(texts, targets, classifier):
             score = 0
             
         labels.append(score)
-        
     return labels

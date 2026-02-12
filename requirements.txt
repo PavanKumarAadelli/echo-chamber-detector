@@ -4,7 +4,6 @@ pandas
 bertopic
 scikit-learn
 transformers
-torch
 sentence-transformers
 streamlit
 plotly
